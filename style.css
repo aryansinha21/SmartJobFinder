@@ -1,18 +1,27 @@
+/* Buttons */
 .btn {
   @apply bg-cyan-500 text-slate-900 px-4 py-2 rounded-xl font-semibold 
          shadow-md transition-all hover:bg-cyan-400 hover:shadow-cyan-400/40
          active:scale-95 focus:ring focus:ring-cyan-300;
 }
+
+/* Input boxes */
 .input {
   @apply w-full rounded-lg border border-slate-700 bg-slate-800/70 px-3 py-2 mt-2
          outline-none focus:ring-2 focus:ring-cyan-400 placeholder-slate-500;
 }
-.card-title { @apply text-xl font-bold text-cyan-400 mb-3; }
+
+/* Card Titles */
+.card-title {
+  @apply text-xl font-bold text-cyan-400 mb-3;
+}
+
+/* Section transitions */
 .page {
   animation: fadeInUp .6s ease;
 }
-.hidden { display:none; }
 
+/* Simple fade-in animation */
 @keyframes fadeInUp {
   from {opacity:0; transform:translateY(20px);}
   to {opacity:1; transform:none;}
