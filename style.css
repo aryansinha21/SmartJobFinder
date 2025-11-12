@@ -1,29 +1,19 @@
-/* Tailwind helper overrides */
 .btn {
   @apply bg-cyan-500 text-slate-900 px-4 py-2 rounded-xl font-semibold 
          shadow-md transition-all hover:bg-cyan-400 hover:shadow-cyan-400/40
          active:scale-95 focus:ring focus:ring-cyan-300;
 }
-
 .input {
   @apply w-full rounded-lg border border-slate-700 bg-slate-800/70 px-3 py-2 mt-2
          outline-none focus:ring-2 focus:ring-cyan-400 placeholder-slate-500;
 }
-
-.card {
-  @apply bg-slate-900/60 p-6 rounded-2xl shadow-lg backdrop-blur-md transition-transform
-         hover:scale-[1.02] hover:shadow-cyan-700/30;
-  animation: fadeIn 0.7s ease-in-out;
+.card-title { @apply text-xl font-bold text-cyan-400 mb-3; }
+.page {
+  animation: fadeInUp .6s ease;
 }
+.hidden { display:none; }
 
-.card-title {
-  @apply text-xl font-bold text-cyan-400 mb-3;
-}
-
-.hidden { display: none; }
-.active { display: block; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+  from {opacity:0; transform:translateY(20px);}
+  to {opacity:1; transform:none;}
 }
