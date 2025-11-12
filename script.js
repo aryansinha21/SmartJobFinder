@@ -1,10 +1,10 @@
-// --- Page navigation ---
+// --- Navigation ---
 function go(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
 }
 
-// --- Auth ---
+// --- Register ---
 function handleRegister(){
   const name=regName.value.trim(), email=regEmail.value.trim(), pw=regPassword.value;
   const users=load("sjf_users",[]);
@@ -15,6 +15,7 @@ function handleRegister(){
   go("login");
 }
 
+// --- Login ---
 function handleLogin(){
   const email=loginEmail.value.trim(), pw=loginPassword.value;
   const users=load("sjf_users",[]);
@@ -26,31 +27,34 @@ function handleLogin(){
   renderEvents();
 }
 
+// --- Logout ---
 function logout(){
   localStorage.removeItem("sjf_current");
   go("landing");
 }
 
-// --- Events ---
+// --- Render events on dashboard ---
 function renderEvents(){
   const list=document.getElementById("eventList");
   list.innerHTML="";
   const query=searchBox.value.toLowerCase();
   const events=load("sjf_events",[]);
-  events.filter(e=>!query||e.title.toLowerCase().includes(query)
+  events
+    .filter(e=>!query||e.title.toLowerCase().includes(query)
           ||e.skills.join().toLowerCase().includes(query))
-        .forEach(e=>{
-          const div=document.createElement("div");
-          div.className="bg-slate-800/60 p-4 rounded-xl border border-slate-700 hover:border-cyan-500 transition-all";
-          div.innerHTML=`<h3 class='text-lg font-bold text-cyan-300'>${e.title}</h3>
-            <p class='text-slate-400'>${e.org} – <em>${e.type}</em></p>
-            <p class='text-sm mt-1'>${e.desc}</p>
-            <p class='text-sm text-slate-400 mt-1'>Skills: ${e.skills.join(", ")}</p>
-            <button class='btn mt-2' onclick="apply('${e.id}')">Apply</button>`;
-          list.appendChild(div);
-        });
+    .forEach(e=>{
+      const div=document.createElement("div");
+      div.className="bg-slate-800/60 p-4 rounded-xl border border-slate-700 hover:border-cyan-500 transition-all";
+      div.innerHTML=`<h3 class='text-lg font-bold text-cyan-300'>${e.title}</h3>
+        <p class='text-slate-400'>${e.org} – <em>${e.type}</em></p>
+        <p class='text-sm mt-1'>${e.desc}</p>
+        <p class='text-sm text-slate-400 mt-1'>Skills: ${e.skills.join(", ")}</p>
+        <button class='btn mt-2' onclick="apply('${e.id}')">Apply</button>`;
+      list.appendChild(div);
+    });
 }
 
+// --- Apply for event ---
 function apply(eid){
   const u=load("sjf_current",null);
   if(!u) return alert("Login first!");
@@ -68,7 +72,6 @@ function adminLogin(){
   if(code!==adm.code) return alert("Wrong code!");
   adminArea.classList.remove("hidden");
 }
-
 function addEvent(){
   const t=evTitle.value.trim(), o=evOrg.value.trim(), ty=evType.value.trim(),
         sk=evSkills.value.split(",").map(s=>s.trim()), d=evDesc.value.trim();
