@@ -82,3 +82,4 @@ function addEvent(){
   alert("Event added!");
   renderEvents();
 }
+
