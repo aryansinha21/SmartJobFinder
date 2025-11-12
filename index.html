@@ -1,95 +1,516 @@
-
-
-
-
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Smart Job Finder</title>
-
-  <!-- Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
-  <!-- Your custom styles -->
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Smart Job Finder — Hackathons & College Opportunities</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;--glass:rgba(255,255,255,0.03)}
+    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{margin:0;background:linear-gradient(180deg,#071028 0%,#081226 100%);color:#e6eef6;min-height:100vh}
+    .wrap{max-width:1000px;margin:28px auto;padding:20px}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    h1{margin:0;font-size:20px;color:var(--accent)}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);margin-bottom:12px}
+    input,select,textarea,button{font-size:15px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;outline:none;width:100%}
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    .grid{display:grid;gap:12px}
+    .cols-2{grid-template-columns:1fr 1fr}
+    .row{display:flex;gap:8px}
+    .btn{cursor:pointer;background:linear-gradient(90deg,var(--accent),#60a5fa);border:none;color:#041624;font-weight:600}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)}
+    .small{font-size:13px;padding:8px}
+    .muted{color:var(--muted);font-size:13px}
+    .event{border-radius:10px;padding:12px;background:var(--glass);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .badge{background:rgba(6,182,212,0.12);color:var(--accent);padding:6px 8px;border-radius:999px;font-size:12px}
+    .applied{background:rgba(16,185,129,0.12);color:#34d399;padding:6px 8px;border-radius:999px;font-size:12px}
+    nav{display:flex;gap:8px}
+    .hidden{display:none}
+    .center{display:flex;align-items:center;gap:12px}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    @media (max-width:640px){.cols-2{grid-template-columns:1fr}}
+    .error{color:#ffb4b4;font-size:13px;margin-top:6px}
+  </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-900 via-slate-900 to-sky-900 min-h-screen text-slate-100 font-sans">
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Smart Job Finder — Hackathons & College Opportunities</h1>
+      <nav id="topNav" class="center">
+        <span id="userBox" class="muted">Not logged in</span>
+        <button id="btnToAuth" class="btn small">Login / Register</button>
+      </nav>
+    </header>
 
-  <!-- Header -->
-  <header class="text-center py-6 backdrop-blur-md bg-white/5 shadow-lg sticky top-0 z-10">
-    <h1 class="text-3xl font-bold text-cyan-400 drop-shadow animate-fadeIn">Smart Job Finder</h1>
-    <p class="text-slate-400 text-sm">Find Hackathons, Internships & College Opportunities</p>
-  </header>
-
-  <!-- Main -->
-  <main class="max-w-xl mx-auto p-6 space-y-8">
-
-    <!-- Landing Page -->
-    <section id="landing" class="page text-center space-y-6">
-      <h2 class="text-4xl font-bold text-cyan-400 animate-fadeInUp">Welcome</h2>
-      <p class="text-slate-400">Discover hackathons, internships, and campus events.</p>
-      <button class="btn" onclick="go('login')">Get Started</button>
-    </section>
-
-    <!-- Login Page -->
-    <section id="login" class="page hidden">
-      <h2 class="card-title">Login</h2>
-      <input id="loginEmail" class="input" placeholder="Email">
-      <input id="loginPassword" class="input" type="password" placeholder="Password">
-      <button class="btn w-full mt-3" onclick="handleLogin()">Login</button>
-      <p class="text-center text-sm mt-2">No account? 
-        <a class="text-cyan-400 underline cursor-pointer" onclick="go('register')">Register</a>
-      </p>
-    </section>
-
-    <!-- Register Page -->
-    <section id="register" class="page hidden">
-      <h2 class="card-title">Register</h2>
-      <input id="regName" class="input" placeholder="Full Name">
-      <input id="regEmail" class="input" placeholder="Email">
-      <input id="regPassword" class="input" type="password" placeholder="Password">
-      <button class="btn w-full mt-3" onclick="handleRegister()">Register</button>
-      <p class="text-center text-sm mt-2">Already have an account?
-        <a class="text-cyan-400 underline cursor-pointer" onclick="go('login')">Login</a>
-      </p>
-    </section>
-
-    <!-- Dashboard -->
-    <section id="dashboard" class="page hidden">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="card-title">Dashboard</h2>
-        <button class="btn text-sm" onclick="logout()">Logout</button>
+    <!-- AUTH CARD -->
+    <div id="authCard" class="card">
+      <div id="authTabs" class="row">
+        <button id="showLogin" class="btn ghost small">Login</button>
+        <button id="showRegister" class="btn ghost small">Register</button>
+        <button id="showForgot" class="btn ghost small">Forgot Password</button>
+        <button id="showAdmin" class="btn ghost small">Admin</button>
       </div>
-      <div class="flex gap-2 mb-3">
-        <input id="searchBox" class="input flex-grow" placeholder="Search events">
-        <button class="btn" onclick="renderEvents()">Search</button>
+
+      <!-- Login -->
+      <div id="loginPane" class="grid" style="margin-top:12px">
+        <div>
+          <label>Email</label>
+          <input id="loginEmail" placeholder="you@college.edu">
+        </div>
+        <div>
+          <label>Password</label>
+          <input id="loginPassword" type="password" placeholder="••••••">
+        </div>
+        <div class="row">
+          <button id="loginBtn" class="btn">Login</button>
+          <button id="logoutBtn" class="btn ghost">Logout</button>
+        </div>
+        <div id="loginMsg" class="error"></div>
       </div>
-      <div id="eventList" class="space-y-3"></div>
-    </section>
 
-    <!-- Admin -->
-    <section id="admin" class="page hidden">
-      <h2 class="card-title">Admin Panel</h2>
-      <input id="adminCode" class="input" placeholder="Admin Code">
-      <button class="btn w-full mb-3" onclick="adminLogin()">Login</button>
-      <div id="adminArea" class="hidden space-y-2">
-        <input id="evTitle" class="input" placeholder="Event Title">
-        <input id="evOrg" class="input" placeholder="Organizer">
-        <input id="evType" class="input" placeholder="Hackathon / Workshop">
-        <input id="evSkills" class="input" placeholder="Skills (comma separated)">
-        <textarea id="evDesc" class="input" placeholder="Description"></textarea>
-        <button class="btn w-full" onclick="addEvent()">Add Event</button>
+      <!-- Register -->
+      <div id="registerPane" class="grid hidden" style="margin-top:12px">
+        <div>
+          <label>Full name</label>
+          <input id="regName" placeholder="Aryan Kumar">
+        </div>
+        <div>
+          <label>Email</label>
+          <input id="regEmail" placeholder="you@college.edu">
+        </div>
+        <div class="cols-2">
+          <div>
+            <label>Password</label>
+            <input id="regPassword" type="password" placeholder="At least 6 chars">
+          </div>
+          <div>
+            <label>Confirm password</label>
+            <input id="regPassword2" type="password" placeholder="Repeat password">
+          </div>
+        </div>
+        <div class="row">
+          <button id="registerBtn" class="btn">Create account</button>
+        </div>
+        <div id="regMsg" class="error"></div>
       </div>
-    </section>
 
-  </main>
+      <!-- Forgot -->
+      <div id="forgotPane" class="grid hidden" style="margin-top:12px">
+        <div>
+          <label>Enter your registered email</label>
+          <input id="forgotEmail" placeholder="you@college.edu">
+        </div>
+        <div class="row">
+          <button id="forgotBtn" class="btn">Generate reset token (demo)</button>
+        </div>
+        <div id="forgotResult" class="muted" style="margin-top:6px"></div>
+      </div>
 
-  <footer class="text-center text-sm py-6 text-slate-400">
-    © 2025 Smart Job Finder | Designed by Aryan
-  </footer>
+      <!-- Admin -->
+      <div id="adminPane" class="grid hidden" style="margin-top:12px">
+        <div>
+          <label>Admin secret (demo)</label>
+          <input id="adminSecret" placeholder="enter admin code">
+        </div>
+        <div class="row">
+          <button id="adminLoginBtn" class="btn">Enter Admin Mode</button>
+          <button id="adminLogoutBtn" class="btn ghost">Exit Admin</button>
+        </div>
+        <div id="adminMsg" class="muted" style="margin-top:6px">Admin code default: <strong>admin123</strong></div>
+      </div>
+    </div>
 
-  <script src="database.js"></script>
-  <script src="script.js"></script>
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="card hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div style="flex:1">
+          <input id="searchBox" placeholder="Search by title, company or skill (e.g. 'AI', 'Hackathon')" />
+        </div>
+        <div style="width:220px">
+          <select id="filterType">
+            <option value="all">All types</option>
+            <option value="Hackathon">Hackathon</option>
+            <option value="Internship">Internship</option>
+            <option value="Workshop">Workshop</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <span class="muted">Showing opportunities</span>
+        <span id="countBadge" class="badge">0</span>
+        <div style="margin-left:auto" id="adminControls" class="hidden">
+          <button id="btnAddEvent" class="btn small">+ Add Opportunity</button>
+        </div>
+      </div>
+
+      <div id="list" style="margin-top:12px;display:grid;gap:10px"></div>
+
+      <div id="addEventForm" class="card hidden" style="margin-top:12px">
+        <h3 style="margin-top:0">Add Opportunity</h3>
+        <div class="grid">
+          <div>
+            <label>Title</label><input id="evTitle" placeholder="AI Hackathon">
+          </div>
+          <div>
+            <label>Organizer / Company</label><input id="evCompany" placeholder="College ABC">
+          </div>
+          <div>
+            <label>Type</label>
+            <select id="evType"><option>Hackathon</option><option>Internship</option><option>Workshop</option></select>
+          </div>
+          <div>
+            <label>Skills (comma separated)</label><input id="evSkills" placeholder="python, ml, nlp">
+          </div>
+          <div>
+            <label>Apply URL (optional)</label><input id="evUrl" placeholder="https://...">
+          </div>
+          <div>
+            <label>Description</label>
+            <textarea id="evDesc" rows="3" placeholder="Short description"></textarea>
+          </div>
+          <div class="row">
+            <button id="saveEventBtn" class="btn">Save</button>
+            <button id="cancelEventBtn" class="btn ghost">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="muted">Tip: This is a fast offline demo. Data lives in your browser storage (localStorage).</div>
+      </footer>
+    </div>
+
+  </div>
+
+<script>
+/* === Simple in-browser app
+   - Data in localStorage under keys: sjf_users, sjf_events, sjf_applies, sjf_admin
+   - Passwords hashed with SHA-256 (WebCrypto) before storage for demo only.
+*/
+
+// ---------- Helpers ----------
+const $ = id => document.getElementById(id);
+const decode = s => s ? s : '';
+
+function now(){ return new Date().toISOString(); }
+
+async function sha256Hex(message){
+  const enc = new TextEncoder();
+  const msgUint8 = enc.encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function load(key, fallback){
+  try{ const v = localStorage.getItem(key); if(!v) return fallback; return JSON.parse(v); } catch(e){ return fallback; }
+}
+function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+// init sample events if none
+function seedEvents(){
+  if(!localStorage.getItem('sjf_events')){
+    const sample = [
+      {id:'e1',title:'Inter-College AI Hackathon', company:'TechSociety', type:'Hackathon', skills:['python','ml','nlp'], url:'', desc:'24-hour AI problem solving competition', createdAt: now()},
+      {id:'e2',title:'Summer Research Internship', company:'XYZ Labs', type:'Internship', skills:['python','data analysis'], url:'', desc:'8-week research internship', createdAt: now()},
+      {id:'e3',title:'Web Dev Workshop', company:'CS Club', type:'Workshop', skills:['javascript','react'], url:'', desc:'Hands-on React workshop', createdAt: now()}
+    ];
+    save('sjf_events', sample);
+  }
+  if(!localStorage.getItem('sjf_users')){
+    // create a demo user: demo@college.edu / password: demo123
+    (async ()=>{
+      const hash = await sha256Hex('demo123');
+      save('sjf_users',[{id:'u_demo',name:'Demo Student',email:'demo@college.edu',pw:hash,createdAt:now(),resetToken:null}]);
+    })();
+  }
+  if(!localStorage.getItem('sjf_admin')){
+    save('sjf_admin',{code:'admin123',isAdmin:false});
+  }
+}
+seedEvents();
+
+// ---------- Auth functions ----------
+async function register(name,email,password){
+  email = email.trim().toLowerCase();
+  if(!name || !email || !password) throw 'All fields required';
+  if(password.length < 6) throw 'Password must be >= 6 chars';
+  const users = load('sjf_users',[]);
+  if(users.find(u=>u.email===email)) throw 'User already exists';
+  const pw = await sha256Hex(password);
+  const id = 'u_'+Date.now();
+  users.push({id,name,email,pw,createdAt:now(),resetToken:null});
+  save('sjf_users',users);
+  return {id,name,email};
+}
+
+async function login(email,password){
+  email = email.trim().toLowerCase();
+  const users = load('sjf_users',[]);
+  const user = users.find(u=>u.email===email);
+  if(!user) throw 'Invalid credentials';
+  const pw = await sha256Hex(password);
+  if(pw !== user.pw) throw 'Invalid credentials';
+  // simple token: user id (not secure) — demo only
+  const token = 't_'+user.id;
+  save('sjf_current', {token, userId:user.id});
+  return user;
+}
+
+function logout(){
+  localStorage.removeItem('sjf_current');
+}
+
+async function forgotPassword(email){
+  email = email.trim().toLowerCase();
+  const users = load('sjf_users',[]);
+  const user = users.find(u=>u.email===email);
+  if(!user) throw 'No user with that email';
+  const token = 'r_'+Math.random().toString(36).slice(2,9);
+  user.resetToken = token;
+  save('sjf_users',users);
+  return token; // demo: we show token to mimic email
+}
+
+async function resetPasswordUsingToken(token,newPass){
+  const users = load('sjf_users',[]);
+  const user = users.find(u=>u.resetToken===token);
+  if(!user) throw 'Invalid token';
+  user.pw = await sha256Hex(newPass);
+  user.resetToken = null;
+  save('sjf_users',users);
+  return true;
+}
+
+function currentUser(){
+  const cur = load('sjf_current', null);
+  if(!cur) return null;
+  const users = load('sjf_users',[]);
+  return users.find(u=>u.id === cur.userId) || null;
+}
+
+// ---------- Event & Apply functions ----------
+function getEvents(){ return load('sjf_events',[]); }
+function saveEvents(ev){ save('sjf_events',ev); }
+function getApplies(){ return load('sjf_applies',[]); }
+function userApplied(eventId, userId){
+  const applies = getApplies();
+  return applies.find(a => a.eventId===eventId && a.userId===userId);
+}
+function applyForEvent(eventId, userId){
+  if(!userId) throw 'Please login to apply';
+  if(userApplied(eventId,userId)) throw 'Already applied';
+  const applies = getApplies();
+  applies.push({id:'a_'+Date.now(),eventId,userId,appliedAt:now()});
+  save('sjf_applies',applies);
+  return true;
+}
+
+// ---------- Admin ----------
+function adminLogin(code){
+  const adm = load('sjf_admin', {code:'admin123',isAdmin:false});
+  if(code === adm.code){ adm.isAdmin = true; save('sjf_admin',adm); return true; }
+  throw 'Wrong admin code';
+}
+function adminLogout(){
+  const adm = load('sjf_admin', {code:'admin123',isAdmin:false});
+  adm.isAdmin = false; save('sjf_admin',adm);
+}
+
+// ---------- UI wiring ----------
+const ui = {
+  authCard: $('authCard'),
+  loginPane: $('loginPane'),
+  registerPane: $('registerPane'),
+  forgotPane: $('forgotPane'),
+  adminPane: $('adminPane'),
+  dashboard: $('dashboard'),
+  userBox: $('userBox'),
+  btnToAuth: $('btnToAuth'),
+  showLogin: $('showLogin'),
+  showRegister: $('showRegister'),
+  showForgot: $('showForgot'),
+  showAdmin: $('showAdmin'),
+  loginBtn: $('loginBtn'),
+  logoutBtn: $('logoutBtn'),
+  registerBtn: $('registerBtn'),
+  loginMsg: $('loginMsg'),
+  regMsg: $('regMsg'),
+  forgotBtn: $('forgotBtn'),
+  forgotResult: $('forgotResult'),
+  adminLoginBtn: $('adminLoginBtn'),
+  adminLogoutBtn: $('adminLogoutBtn'),
+  adminMsg: $('adminMsg'),
+  topNav: $('topNav'),
+  searchBox: $('searchBox'),
+  filterType: $('filterType'),
+  list: $('list'),
+  countBadge: $('countBadge'),
+  adminControls: $('adminControls'),
+  btnAddEvent: $('btnAddEvent'),
+  addEventForm: $('addEventForm'),
+  saveEventBtn: $('saveEventBtn'),
+  cancelEventBtn: $('cancelEventBtn')
+};
+
+function showPane(pane){
+  ui.loginPane.classList.add('hidden');
+  ui.registerPane.classList.add('hidden');
+  ui.forgotPane.classList.add('hidden');
+  ui.adminPane.classList.add('hidden');
+  pane.classList.remove('hidden');
+}
+
+function refreshUserUI(){
+  const u = currentUser();
+  if(u){
+    ui.userBox.textContent = u.name + ' • ' + u.email;
+    ui.btnToAuth.textContent = 'Open Auth';
+    ui.authCard.classList.add('hidden');
+    ui.dashboard.classList.remove('hidden');
+  } else {
+    ui.userBox.textContent = 'Not logged in';
+    ui.authCard.classList.remove('hidden');
+    ui.dashboard.classList.add('hidden'); // show dashboard only after user opens it manually
+    ui.btnToAuth.textContent = 'Open Auth';
+  }
+  const adm = load('sjf_admin',{code:'admin123',isAdmin:false});
+  if(adm.isAdmin) ui.adminControls.classList.remove('hidden'); else ui.adminControls.classList.add('hidden');
+}
+
+function renderList(){
+  const all = getEvents();
+  const q = ui.searchBox.value.trim().toLowerCase();
+  const f = ui.filterType.value;
+  const u = currentUser();
+  const filtered = all.filter(ev=>{
+    if(f !== 'all' && ev.type !== f) return false;
+    if(!q) return true;
+    return (ev.title + ' ' + ev.company + ' ' + ev.skills.join(' ')+ ' ' + ev.desc).toLowerCase().includes(q);
+  });
+  ui.list.innerHTML = '';
+  ui.countBadge.textContent = filtered.length;
+  filtered.forEach(ev=>{
+    const div = document.createElement('div'); div.className='event';
+    const left = document.createElement('div'); left.style.flex='1';
+    left.innerHTML = `<strong>${ev.title}</strong> <div class="muted">${ev.company} • <span class="badge">${ev.type}</span></div>
+      <div class="muted" style="margin-top:8px;font-size:13px">${ev.desc || ''}</div>
+      <div style="margin-top:8px"><span class="muted">Skills:</span> ${ev.skills.map(s=>'<span class="badge" style="margin-left:6px">'+s+'</span>').join(' ')}</div>`;
+    const right = document.createElement('div'); right.style.minWidth='160px'; right.style.textAlign='right';
+    const applied = u ? userApplied(ev.id, u.id) : false;
+    const applyBtn = document.createElement('button');
+    applyBtn.className = 'btn small';
+    applyBtn.textContent = applied ? 'Applied' : 'Apply';
+    if(applied){ applyBtn.classList.add('ghost'); applyBtn.disabled=true; }
+    applyBtn.onclick = () => {
+      try{
+        applyForEvent(ev.id, u ? u.id : null);
+        alert('Application recorded! Check Admin or your demo storage.');
+        renderList();
+      } catch(e){ alert(e); }
+    };
+    const more = document.createElement('div');
+    if(ev.url){
+      const a = document.createElement('a'); a.href = ev.url; a.target='_blank'; a.className='btn ghost small'; a.textContent='Go to apply';
+      more.appendChild(a);
+    }
+    right.appendChild(applyBtn); right.appendChild(more);
+    if(load('sjf_admin',{code:'admin123',isAdmin:false}).isAdmin){
+      const del = document.createElement('button'); del.className='btn ghost small'; del.textContent='Delete';
+      del.onclick = ()=>{ if(confirm('Delete this opportunity?')){ const allEv=getEvents().filter(x=>x.id!==ev.id); saveEvents(allEv); renderList(); } };
+      right.appendChild(del);
+    }
+    div.appendChild(left); div.appendChild(right);
+    ui.list.appendChild(div);
+  });
+}
+
+// ---------- Events ----------
+ui.btnToAuth.onclick = ()=>{ ui.authCard.classList.toggle('hidden'); ui.dashboard.classList.toggle('hidden'); };
+
+ui.showLogin.onclick = ()=> showPane(ui.loginPane);
+ui.showRegister.onclick = ()=> showPane(ui.registerPane);
+ui.showForgot.onclick = ()=> showPane(ui.forgotPane);
+ui.showAdmin.onclick = ()=> showPane(ui.adminPane);
+
+ui.registerBtn.onclick = async ()=>{
+  ui.regMsg.textContent = '';
+  try{
+    const name = $('regName').value.trim(), email = $('regEmail').value.trim(), pw = $('regPassword').value, pw2 = $('regPassword2').value;
+    if(pw !== pw2) throw 'Passwords do not match';
+    await register(name,email,pw);
+    ui.regMsg.style.color = '#bff6c6'; ui.regMsg.textContent = 'Account created. You can login now.';
+    $('regName').value='';$('regEmail').value='';$('regPassword').value='';$('regPassword2').value='';
+  }catch(e){ ui.regMsg.style.color='#ffb4b4'; ui.regMsg.textContent = e; }
+};
+
+ui.loginBtn.onclick = async ()=>{
+  ui.loginMsg.textContent = '';
+  try{
+    const email = $('loginEmail').value.trim(), pw = $('loginPassword').value;
+    const u = await login(email,pw);
+    ui.loginMsg.style.color = '#bff6c6'; ui.loginMsg.textContent = 'Login successful';
+    $('loginEmail').value='';$('loginPassword').value='';
+    ui.authCard.classList.add('hidden');
+    ui.dashboard.classList.remove('hidden');
+    refreshUserUI();
+    renderList();
+  }catch(e){ ui.loginMsg.style.color = '#ffb4b4'; ui.loginMsg.textContent = e; }
+};
+
+ui.logoutBtn.onclick = ()=>{
+  logout();
+  refreshUserUI();
+  alert('Logged out');
+};
+
+ui.forgotBtn.onclick = async ()=>{
+  ui.forgotResult.textContent='';
+  try{
+    const email = $('forgotEmail').value.trim();
+    const token = await forgotPassword(email);
+    ui.forgotResult.textContent = 'Reset token (demo): ' + token + ' — use this token with admin console or to implement reset.';
+  }catch(e){ ui.forgotResult.textContent = e; }
+};
+
+ui.adminLoginBtn.onclick = ()=>{
+  try{
+    const code = $('adminSecret').value.trim();
+    adminLogin(code);
+    ui.adminMsg.textContent = 'Admin mode ON';
+    ui.addEventForm.classList.add('hidden');
+    refreshUserUI();
+    renderList();
+  } catch(e){ ui.adminMsg.textContent = e; }
+};
+ui.adminLogoutBtn.onclick = ()=>{
+  adminLogout(); ui.adminMsg.textContent='Admin mode OFF'; refreshUserUI(); renderList();
+};
+
+ui.btnAddEvent.onclick = ()=>{ ui.addEventForm.classList.toggle('hidden'); };
+ui.cancelEventBtn.onclick = ()=>{ ui.addEventForm.classList.add('hidden'); };
+
+ui.saveEventBtn.onclick = ()=>{
+  const title = $('evTitle').value.trim(), company=$('evCompany').value.trim();
+  const type = $('evType').value, skills = $('evSkills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const url = $('evUrl').value.trim(), desc = $('evDesc').value.trim();
+  if(!title || !company) return alert('Title and Organizer required');
+  const ev = {id:'e_'+Date.now(),title,company,type,skills,url,desc,createdAt:now()};
+  const all = getEvents(); all.unshift(ev); saveEvents(all);
+  $('evTitle').value='';$('evCompany').value='';$('evSkills').value='';$('evUrl').value='';$('evDesc').value='';
+  ui.addEventForm.classList.add('hidden');
+  renderList();
+};
+
+// filters
+ui.searchBox.oninput = renderList;
+ui.filterType.onchange = renderList;
+
+// initial render
+refreshUserUI();
+renderList();
+
+</script>
 </body>
 </html>
