@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Smart Job Finder</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+  <script defer src="database.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body class="bg-gradient-to-tr from-sky-900 via-slate-900 to-indigo-900 min-h-screen text-slate-50">
+  <header class="text-center py-6">
+    <h1 class="text-3xl font-bold text-cyan-400 drop-shadow">Smart Job Finder</h1>
+    <nav class="mt-4 space-x-3">
+      <button class="btn" onclick="showSection('login')">Login</button>
+      <button class="btn" onclick="showSection('register')">Register</button>
+      <button class="btn" onclick="showSection('dashboard')">Dashboard</button>
+      <button class="btn" onclick="showSection('admin')">Admin</button>
+    </nav>
+  </header>
+
+  <main class="max-w-xl mx-auto p-4 space-y-10">
+    <section id="login" class="card">
+      <h2 class="card-title">Login</h2>
+      <input id="loginEmail" class="input" placeholder="Email">
+      <input id="loginPassword" class="input" type="password" placeholder="Password">
+      <button class="btn w-full" onclick="handleLogin()">Login</button>
+      <p id="loginMsg" class="text-center mt-2 text-sm"></p>
+    </section>
+
+    <section id="register" class="card hidden">
+      <h2 class="card-title">Register</h2>
+      <input id="regName" class="input" placeholder="Full name">
+      <input id="regEmail" class="input" placeholder="Email">
+      <input id="regPassword" class="input" type="password" placeholder="Password">
+      <button class="btn w-full" onclick="handleRegister()">Register</button>
+      <p id="regMsg" class="text-center mt-2 text-sm"></p>
+    </section>
+
+    <section id="dashboard" class="card hidden">
+      <h2 class="card-title">Dashboard</h2>
+      <div class="flex gap-2 mb-3">
+        <input id="searchBox" class="input flex-grow" placeholder="Search events">
+        <button class="btn" onclick="renderEvents()">Go</button>
+      </div>
+      <div id="eventList" class="space-y-3"></div>
+    </section>
+
+    <section id="admin" class="card hidden">
+      <h2 class="card-title">Admin Panel</h2>
+      <input id="adminCode" class="input" placeholder="Admin code">
+      <button class="btn w-full mb-3" onclick="adminLogin()">Login</button>
+      <div id="adminArea" class="hidden space-y-2">
+        <input id="evTitle" class="input" placeholder="Title">
+        <input id="evOrg" class="input" placeholder="Organizer">
+        <input id="evType" class="input" placeholder="Hackathon / Workshop">
+        <input id="evSkills" class="input" placeholder="Skills (comma separated)">
+        <textarea id="evDesc" class="input" placeholder="Description"></textarea>
+        <button class="btn w-full" onclick="addEvent()">Add Event</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center text-sm py-6 text-slate-400">
+    © 2025 Smart Job Finder | Designed by Aryan
+  </footer>
+
+  <style>
+    .btn {
+      @apply bg-cyan-500 text-slate-900 px-3 py-1.5 rounded-xl font-semibold transition
+             hover:bg-cyan-400 active:scale-95 focus:ring focus:ring-cyan-300;
+    }
+    .input {
+      @apply w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 outline-none
+             focus:ring-2 focus:ring-cyan-400;
+    }
+    .card {
+      @apply bg-slate-900/70 p-6 rounded-2xl shadow-lg backdrop-blur-md transition-transform
+             hover:scale-[1.02] hover:shadow-cyan-700/40;
+      animation: fadeIn 0.6s ease-in;
+    }
+    .card-title { @apply text-xl font-bold text-cyan-400 mb-2; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:none;} }
+  </style>
+</body>
+</html>
