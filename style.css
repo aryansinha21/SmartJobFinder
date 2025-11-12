@@ -1,40 +1,29 @@
-body {
-  margin: 0;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
+/* Tailwind helper overrides */
+.btn {
+  @apply bg-cyan-500 text-slate-900 px-4 py-2 rounded-xl font-semibold 
+         shadow-md transition-all hover:bg-cyan-400 hover:shadow-cyan-400/40
+         active:scale-95 focus:ring focus:ring-cyan-300;
 }
-header {
-  background: #1e293b;
-  padding: 1rem;
-  text-align: center;
+
+.input {
+  @apply w-full rounded-lg border border-slate-700 bg-slate-800/70 px-3 py-2 mt-2
+         outline-none focus:ring-2 focus:ring-cyan-400 placeholder-slate-500;
 }
-h1 { margin: 0; color: #38bdf8; font-size: 1.4rem; }
-nav button {
-  margin: .3rem;
-  background: #38bdf8;
-  border: none;
-  padding: .4rem .8rem;
-  border-radius: .4rem;
-  cursor: pointer;
+
+.card {
+  @apply bg-slate-900/60 p-6 rounded-2xl shadow-lg backdrop-blur-md transition-transform
+         hover:scale-[1.02] hover:shadow-cyan-700/30;
+  animation: fadeIn 0.7s ease-in-out;
 }
-nav button:hover { background: #0284c7; color: #fff; }
-main { max-width: 800px; margin: 1.5rem auto; padding: 1rem; }
-.section { display: none; }
-.section.active { display: block; }
-input, textarea {
-  width: 100%;
-  margin: .3rem 0;
-  padding: .4rem;
-  border-radius: .3rem;
-  border: 1px solid #475569;
-  background: #1e293b;
-  color: #e2e8f0;
+
+.card-title {
+  @apply text-xl font-bold text-cyan-400 mb-3;
 }
-button { margin-top: .5rem; }
-footer {
-  text-align: center;
-  font-size: .8rem;
-  padding: 1rem;
-  color: #94a3b8;
+
+.hidden { display: none; }
+.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
