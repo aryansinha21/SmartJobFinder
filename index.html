@@ -1,92 +1,316 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
->
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Smart Job Finder</title>
-
-  <!-- Tailwind CSS for graphics and animation -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Job Finder — Hackathons & College Opportunities</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .dark-mode { background-color: #121212; color: #ffffff; }
+        .light-mode { background-color: #ffffff; color: #000000; }
+        .card { transition: transform 0.2s; }
+        .card:hover { transform: scale(1.05); }
+        .fade-in { animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .chart-container { max-width: 400px; margin: auto; }
+        .navbar { background: linear-gradient(90deg, #007bff, #28a745); }
+        .btn-primary { background: #007bff; border: none; }
+        .btn-success { background: #28a745; border: none; }
+        .alert { position: fixed; top: 10px; right: 10px; z-index: 1000; display: none; }
+    </style>
 </head>
+<body class="light-mode">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-briefcase"></i> Smart Job Finder</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#dashboard" onclick="showSection('dashboard')">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#events" onclick="showSection('events')">Events</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#profile" onclick="showSection('profile')">Profile</a></li>
+                    <li class="nav-item"><button class="btn btn-outline-light ms-2" onclick="toggleTheme()"><i class="fas fa-moon"></i> Theme</button></li>
+                    <li class="nav-item"><button class="btn btn-outline-light ms-2" onclick="logout()">Logout</button></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-<body class="bg-gradient-to-br from-indigo-900 via-slate-900 to-sky-900 min-h-screen text-slate-100 font-sans">
+    <div class="container mt-4">
+        <div id="alert" class="alert alert-success"></div>
 
-  <!-- Header -->
-  <header class="text-center py-6 backdrop-blur-md bg-white/5 shadow-lg sticky top-0 z-10">
-    <h1 class="text-3xl font-bold text-cyan-400 drop-shadow animate-fadeIn">Smart Job Finder</h1>
-    <p class="text-slate-400 text-sm">Find Hackathons, Internships & College Opportunities</p>
-  </header>
+        <!-- Login/Register Section -->
+        <div id="auth-section" class="fade-in">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header text-center"><h3>Login</h3></div>
+                        <div class="card-body">
+                            <input type="email" id="login-email" class="form-control mb-2" placeholder="Email">
+                            <input type="password" id="login-password" class="form-control mb-2" placeholder="Password">
+                            <button class="btn btn-primary w-100" onclick="login()">Login</button>
+                            <button class="btn btn-link w-100" onclick="showRegister()">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <!-- Main -->
-  <main class="max-w-xl mx-auto p-6 space-y-8">
+        <!-- Register Section -->
+        <div id="register-section" class="fade-in" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header text-center"><h3>Register</h3></div>
+                        <div class="card-body">
+                            <input type="text" id="reg-name" class="form-control mb-2" placeholder="Name">
+                            <input type="email" id="reg-email" class="form-control mb-2" placeholder="Email">
+                            <input type="password" id="reg-password" class="form-control mb-2" placeholder="Password">
+                            <button class="btn btn-success w-100" onclick="register()">Register</button>
+                            <button class="btn btn-link w-100" onclick="showLogin()">Back to Login</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- Landing Page -->
-    <section id="landing" class="page text-center space-y-6">
-      <h2 class="text-4xl font-bold text-cyan-400 animate-fadeInUp">Welcome</h2>
-      <p class="text-slate-400">Discover hackathons, internships, and campus events.</p>
-      <button class="btn" onclick="go('login')">Get Started</button>
-    </section>
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="fade-in" style="display: none;">
+            <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Applications Overview</div>
+                        <div class="card-body">
+                            <canvas id="applicationsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Quick Stats</div>
+                        <div class="card-body">
+                            <p>Total Events: <span id="total-events">0</span></p>
+                            <p>Your Applications: <span id="user-applications">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- Login Page -->
-    <section id="login" class="page hidden">
-      <h2 class="card-title">Login</h2>
-      <input id="loginEmail" class="input" placeholder="Email">
-      <input id="loginPassword" class="input" type="password" placeholder="Password">
-      <button class="btn w-full mt-3" onclick="handleLogin()">Login</button>
-      <p class="text-center text-sm mt-2">No account? 
-        <a class="text-cyan-400 underline cursor-pointer" onclick="go('register')">Register</a>
-      </p>
-    </section>
+        <!-- Events Section -->
+        <div id="events-section" class="fade-in" style="display: none;">
+            <h2><i class="fas fa-calendar-alt"></i> Events</h2>
+            <div class="mb-3">
+                <input type="text" id="search-events" class="form-control" placeholder="Search events..." onkeyup="filterEvents()">
+                <select id="filter-type" class="form-select mt-2" onchange="filterEvents()">
+                    <option value="">All Types</option>
+                    <option value="Hackathon">Hackathon</option>
+                    <option value="Internship">Internship</option>
+                    <option value="Workshop">Workshop</option>
+                </select>
+            </div>
+            <div id="events-list" class="row"></div>
+            <nav><ul class="pagination justify-content-center" id="pagination"></ul></nav>
+            <button class="btn btn-primary mt-3" onclick="showAddEvent()" id="add-event-btn" style="display: none;">Add Event</button>
+        </div>
 
-    <!-- Register Page -->
-    <section id="register" class="page hidden">
-      <h2 class="card-title">Register</h2>
-      <input id="regName" class="input" placeholder="Full Name">
-      <input id="regEmail" class="input" placeholder="Email">
-      <input id="regPassword" class="input" type="password" placeholder="Password">
-      <button class="btn w-full mt-3" onclick="handleRegister()">Register</button>
-      <p class="text-center text-sm mt-2">Already have an account?
-        <a class="text-cyan-400 underline cursor-pointer" onclick="go('login')">Login</a>
-      </p>
-    </section>
+        <!-- Add Event Section -->
+        <div id="add-event-section" class="fade-in" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header text-center"><h3>Add Event</h3></div>
+                        <div class="card-body">
+                            <input type="text" id="event-title" class="form-control mb-2" placeholder="Title">
+                            <textarea id="event-description" class="form-control mb-2" placeholder="Description"></textarea>
+                            <input type="date" id="event-date" class="form-control mb-2">
+                            <select id="event-type" class="form-select mb-2">
+                                <option>Hackathon</option><option>Internship</option><option>Workshop</option>
+                            </select>
+                            <input type="text" id="event-location" class="form-control mb-2" placeholder="Location">
+                            <button class="btn btn-success w-100" onclick="addEvent()">Add Event</button>
+                            <button class="btn btn-link w-100" onclick="showEvents()">Back to Events</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- Dashboard -->
-    <section id="dashboard" class="page hidden">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="card-title">Dashboard</h2>
-        <button class="btn text-sm" onclick="logout()">Logout</button>
-      </div>
-      <div class="flex gap-2 mb-3">
-        <input id="searchBox" class="input flex-grow" placeholder="Search events">
-        <button class="btn" onclick="renderEvents()">Search</button>
-      </div>
-      <div id="eventList" class="space-y-3"></div>
-    </section>
+        <!-- Profile Section -->
+        <div id="profile-section" class="fade-in" style="display: none;">
+            <h2><i class="fas fa-user"></i> Profile</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p>Name: <span id="profile-name"></span></p>
+                    <p>Email: <span id="profile-email"></span></p>
+                    <h4>Applied Events</h4>
+                    <ul id="applied-events" class="list-group"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Admin -->
-    <section id="admin" class="page hidden">
-      <h2 class="card-title">Admin Panel</h2>
-      <input id="adminCode" class="input" placeholder="Admin Code">
-      <button class="btn w-full mb-3" onclick="adminLogin()">Login</button>
-      <div id="adminArea" class="hidden space-y-2">
-        <input id="evTitle" class="input" placeholder="Event Title">
-        <input id="evOrg" class="input" placeholder="Organizer">
-        <input id="evType" class="input" placeholder="Hackathon / Workshop">
-        <input id="evSkills" class="input" placeholder="Skills (comma separated)">
-        <textarea id="evDesc" class="input" placeholder="Description"></textarea>
-        <button class="btn w-full" onclick="addEvent()">Add Event</button>
-      </div>
-    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let currentUser = null;
+        let events = JSON.parse(localStorage.getItem('events')) || [];
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let applications = JSON.parse(localStorage.getItem('applications')) || [];
+        const itemsPerPage = 6;
+        let currentPage = 1;
 
-  </main>
+        // Utility Functions
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
 
-  <footer class="text-center text-sm py-6 text-slate-400">
-    © 2025 Smart Job Finder | Designed by Aryan
-  </footer>
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+        }
 
-  <script src="database.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+        function showSection(section) {
+            document.querySelectorAll('[id$="-section"]').forEach(el => el.style.display = 'none');
+            document.getElementById(`${section}-section`).style.display = 'block';
+            if (section === 'events') loadEvents();
+            if (section === 'dashboard') loadDashboard();
+            if (section === 'profile') loadProfile();
+        }
+
+        function showLogin() { document.getElementById('auth-section').style.display = 'block'; document.getElementById('register-section').style.display = 'none'; }
+        function showRegister() { document.getElementById('auth-section').style.display = 'none'; document.getElementById('register-section').style.display = 'block'; }
+        function showAddEvent() { document.getElementById('events-section').style.display = 'none'; document.getElementById('add-event-section').style.display = 'block'; }
+        function showEvents() { document.getElementById('add-event-section').style.display = 'none'; showSection('events'); }
+
+        // Auth Functions
+        function register() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            if (!name || !email || !password) return showAlert('All fields required', 'danger');
+            if (users.find(u => u.email === email)) return showAlert('Email already exists', 'danger');
+            users.push({ name, email, password: btoa(password), role: 'user' }); // Simple encoding
+            localStorage.setItem('users', JSON.stringify(users));
+            showAlert('Registered successfully!');
+            showLogin();
+        }
+
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const user = users.find(u => u.email === email && atob(u.password) === password);
+            if (!user) return showAlert('Invalid credentials', 'danger');
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('register-section').style.display = 'none';
+            if (user.role === 'admin') document.getElementById('add-event-btn').style.display = 'block';
+            showSection('dashboard');
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            location.reload();
+        }
+
+        // Events Functions
+        function addEvent() {
+            if (!currentUser || currentUser.role !== 'admin') return showAlert('Admin only', 'danger');
+            const title = document.getElementById('event-title').value;
+            const description = document.getElementById('event-description').value;
+            const date = document.getElementById('event-date').value;
+            const type = document.getElementById('event-type').value;
+            const location = document.getElementById('event-location').value;
+            if (!title || !description || !date) return showAlert('All fields required', 'danger');
+            events.push({ id: Date.now(), title, description, date, type, location, applicants: [] });
+            localStorage.setItem('events', JSON.stringify(events));
+            showAlert('Event added!');
+            showEvents();
+        }
+
+        function loadEvents(page = 1) {
+            currentPage = page;
+            const filtered = events.filter(e => {
+                const search = document.getElementById('search-events').value.toLowerCase();
+                const type = document.getElementById('filter-type').value;
+                return (e.title.toLowerCase().includes(search) || e.description.toLowerCase().includes(search)) && (!type || e.type === type);
+            });
+            const start = (page - 1) * itemsPerPage;
+            const paginated = filtered.slice(start, start + itemsPerPage);
+            const list = document.getElementById('events-list');
+            list.innerHTML = paginated.map(e => `
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>${e.title} <i class="fas fa-${e.type === 'Hackathon' ? 'code' : e.type === 'Internship' ? 'building' : 'chalkboard'}"></i></h5>
+                            <p>${e.description}</p>
+                            <p><i class="fas fa-calendar"></i> ${e.date} | <i class="fas fa-map-marker-alt"></i> ${e.location}</p>
+                            <button class="btn btn-primary" onclick="applyForEvent(${e.id})">Apply</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            renderPagination(filtered.length);
+        }
+
+        function filterEvents() { loadEvents(1); }
+
+        function renderPagination(total) {
+            const pages = Math.ceil(total / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            for (let i = 1; i <= pages; i++) {
+                pagination.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" onclick="loadEvents(${i})">${i}</a></li>`;
+            }
+        }
+
+        function applyForEvent(id) {
+            if (!currentUser) return showAlert('Login required', 'danger');
+            const event = events.find(e => e.id === id);
+            if (event.applicants.includes(currentUser.email)) return showAlert('Already applied', 'warning');
+            event.applicants.push(currentUser.email);
+            applications.push({ user: currentUser.email, event: id });
+            localStorage.setItem('events', JSON.stringify(events));
+            localStorage.setItem('applications', JSON.stringify(applications));
+            showAlert('Applied successfully!');
+        }
+
+        // Dashboard Functions
+        function loadDashboard() {
+            const userApps = applications.filter(a => a.user === currentUser.email);
+            document.getElementById('total-events').textContent = events.length;
+            document.getElementById('user-applications').textContent = userApps.length;
+            const ctx = document.getElementById('applicationsChart').getContext('2d');
+            const types = ['Hackathon', 'Internship', 'Workshop'];
+            const data = types.map(t => userApps.filter(a => events.find(e => e.id === a.event).type === t).length);
+            new Chart(ctx, {
+                type: 'bar',
+                data: { labels: types, datasets: [{ label: 'Applications', data, backgroundColor: ['#007bff', '#28a745', '#ffc107'] }] }
+            });
+        }
+
+        // Profile Functions
+        function loadProfile() {
+            document.getElementById('profile-name').textContent = currentUser.name;
+            document.getElementById('profile-email').textContent = currentUser.email;
+            const applied = applications.filter(a => a.user === currentUser.email).map(a => events.find(e => e.id === a.event).title);
+            document.getElementById('applied-events').innerHTML = applied.map(title => `<li class="list-group-item">${title}</li>`).join('');
+        }
+
+        // Initialize
+        window.onload = () => {
+            const savedUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (savedUser) {
+                currentUser = savedUser;
+                document.getElementById('auth-section').style.display =
