@@ -5,52 +5,57 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Smart Job Finder</title>
 
-  <!-- Tailwind CDN -->
+  <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
-
-  <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
-
-<body class="bg-gradient-to-br from-indigo-900 via-slate-900 to-sky-900 min-h-screen text-slate-100 font-sans">
+<body class="bg-gradient-to-br from-indigo-900 via-slate-900 to-sky-900 min-h-screen text-slate-100">
 
   <!-- Header -->
-  <header class="text-center py-6 backdrop-blur-md bg-white/5 shadow-lg sticky top-0 z-10">
-    <h1 class="text-3xl font-bold text-cyan-400 drop-shadow-lg animate-fadeIn">Smart Job Finder</h1>
-    <p class="text-slate-400 text-sm">Find hackathons, internships, and workshops within your campus</p>
-    <nav class="mt-4 space-x-3">
-      <button class="btn" onclick="showSection('login')">Login</button>
-      <button class="btn" onclick="showSection('register')">Register</button>
-      <button class="btn" onclick="showSection('dashboard')">Dashboard</button>
-      <button class="btn" onclick="showSection('admin')">Admin</button>
-    </nav>
+  <header class="text-center py-6 backdrop-blur bg-white/5 shadow-md sticky top-0 z-10">
+    <h1 class="text-3xl font-bold text-cyan-400 drop-shadow animate-fadeIn">Smart Job Finder</h1>
+    <p class="text-slate-400 text-sm">Find hackathons, internships & workshops</p>
   </header>
 
-  <!-- Main Content -->
-  <main class="max-w-xl mx-auto p-4 space-y-10 mt-6">
+  <!-- Main -->
+  <main class="max-w-xl mx-auto p-6 space-y-8">
+
+    <!-- Landing -->
+    <section id="landing" class="page text-center space-y-6">
+      <h2 class="text-4xl font-bold text-cyan-400 animate-fadeInUp">Welcome</h2>
+      <p class="text-slate-400">Discover opportunities within your college.</p>
+      <button class="btn" onclick="go('login')">Get Started</button>
+    </section>
 
     <!-- Login -->
-    <section id="login" class="card active">
+    <section id="login" class="page hidden">
       <h2 class="card-title">Login</h2>
       <input id="loginEmail" class="input" placeholder="Email">
       <input id="loginPassword" class="input" type="password" placeholder="Password">
       <button class="btn w-full mt-3" onclick="handleLogin()">Login</button>
-      <p id="loginMsg" class="text-center mt-2 text-sm"></p>
+      <p class="text-center text-sm mt-2">No account?
+        <a class="text-cyan-400 underline cursor-pointer" onclick="go('register')">Register</a>
+      </p>
     </section>
 
     <!-- Register -->
-    <section id="register" class="card hidden">
+    <section id="register" class="page hidden">
       <h2 class="card-title">Register</h2>
       <input id="regName" class="input" placeholder="Full Name">
       <input id="regEmail" class="input" placeholder="Email">
       <input id="regPassword" class="input" type="password" placeholder="Password">
       <button class="btn w-full mt-3" onclick="handleRegister()">Register</button>
-      <p id="regMsg" class="text-center mt-2 text-sm"></p>
+      <p class="text-center text-sm mt-2">Already have an account?
+        <a class="text-cyan-400 underline cursor-pointer" onclick="go('login')">Login</a>
+      </p>
     </section>
 
     <!-- Dashboard -->
-    <section id="dashboard" class="card hidden">
-      <h2 class="card-title">Dashboard</h2>
+    <section id="dashboard" class="page hidden">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="card-title">Dashboard</h2>
+        <button class="btn text-sm" onclick="logout()">Logout</button>
+      </div>
       <div class="flex gap-2 mb-3">
         <input id="searchBox" class="input flex-grow" placeholder="Search events">
         <button class="btn" onclick="renderEvents()">Go</button>
@@ -59,7 +64,7 @@
     </section>
 
     <!-- Admin -->
-    <section id="admin" class="card hidden">
+    <section id="admin" class="page hidden">
       <h2 class="card-title">Admin Panel</h2>
       <input id="adminCode" class="input" placeholder="Admin Code">
       <button class="btn w-full mb-3" onclick="adminLogin()">Login</button>
@@ -75,12 +80,10 @@
 
   </main>
 
-  <!-- Footer -->
   <footer class="text-center text-sm py-6 text-slate-400">
     © 2025 Smart Job Finder | Designed by Aryan
   </footer>
 
-  <!-- Scripts -->
   <script src="database.js"></script>
   <script src="script.js"></script>
 </body>
